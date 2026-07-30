@@ -1,0 +1,6 @@
+streamlit
+matplotlib
+numpy
+scikit-learn
+cryptography
+customtkinter

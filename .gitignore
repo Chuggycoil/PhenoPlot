@@ -1,0 +1,23 @@
+# Ignore heavy compiled executables & zip archives
+*.zip
+*.exe
+*.tar.gz
+*.dmg
+
+# Ignore virtual environments & cache
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+dist/
+
+# Ignore OS junk
+.DS_Store
+Thumbs.db
+*.zip
+*.exe
+build/
+dist/
+venv/
