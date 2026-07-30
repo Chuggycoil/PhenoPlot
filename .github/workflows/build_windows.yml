@@ -1,40 +1,43 @@
 name: Build Windows Executable
 
 on:
-  workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:  # Gör så att du kan starta bygget manuellt med en knapp
 
 jobs:
   build-windows:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install customtkinter matplotlib numpy scikit-learn cryptography pyinstaller Pillow
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install customtkinter matplotlib numpy scikit-learn cryptography pillow pyinstaller
 
-      - name: Build Windows Executable
-        run: |
-          pyinstaller PhenoPlot.spec
+    - name: Build Windows Executable
+      run: |
+        pyinstaller --noconfirm --onedir --windowed `
+          --name "PhenoPlot_v1.0_Windows" `
+          --hidden-import "PIL._tkinter_finder" `
+          --add-data "phenotypes.ppc;." `
+          --add-data "app_logo.png;." `
+          --add-data "crypto_utils.py;." `
+          --add-data "pheno_core.py;." `
+          gui_public.py
 
-      - name: Zip Windows Build Folder
-        shell: powershell
-        run: |
-          Compress-Archive -Path dist/PhenoPlot -DestinationPath PhenoPlot_v1.0_Windows.zip
+    - name: Create Zip Archive
+      run: |
+        Compress-Archive -Path dist/PhenoPlot_v1.0_Windows -DestinationPath PhenoPlot_v1.0_Windows.zip
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: PhenoPlot_v1.0_Windows
-          path: PhenoPlot_v1.0_Windows.zip
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: PhenoPlot_v1.0_Windows
+        path: PhenoPlot_v1.0_Windows.zip
